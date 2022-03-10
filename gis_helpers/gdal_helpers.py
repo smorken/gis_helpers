@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 from contextlib import contextmanager
 import numpy as np
 from osgeo import gdal
@@ -17,12 +18,27 @@ class GDALHelperDataset:
         data_bounds: RasterBound,
         raster_bounds: RasterBound,
         nodata: int,
+        geo_transform: Tuple[float, float, float, float, float, float],
+        projection: str,
     ):
         self.path = path
         self.data = data
         self.data_bounds = data_bounds
         self.raster_bounds = raster_bounds
         self.nodata = nodata
+        self.geo_transform = geo_transform
+        self.projection = projection
+
+        (
+            self.ulx,
+            self.xres,
+            self.xskew,
+            self.uly,
+            self.yskew,
+            self.yres,
+        ) = geo_transform
+        self.lrx = self.ulx + (self.data_bounds.x_size * self.xres)
+        self.lry = self.uly + (self.data_bounds.y_size * self.yres)
 
 
 @contextmanager
@@ -152,6 +168,7 @@ def read_dataset(path, bounds=None, raster_band=1):
             f"reading raster {path} size: ({x_size}, {y_size}) "
             f"offset: ({x_off}, {y_off})"
         )
+
         result = GDALHelperDataset(
             path=path,
             data=np.array(band.ReadAsArray(x_off, y_off, x_size, y_size)),
@@ -160,6 +177,8 @@ def read_dataset(path, bounds=None, raster_band=1):
                 0, 0, dataset.RasterXSize, dataset.RasterYSize
             ),
             nodata=band.GetNoDataValue(),
+            geo_transform=dataset.GetGeoTransform(),
+            projection=dataset.GetProjection(),
         )
 
         del band
