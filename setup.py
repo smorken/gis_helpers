@@ -16,13 +16,13 @@ with open("requirements.txt") as f:
 setup(
     name="gis_heleprs",
     version="0.1.2",
-    description="Scripts to clean up CBM-CFS3 data",
+    description="some basic gis scripts",
     keywords=["cbm-cfs3"],
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="mit",
     packages=find_packages(exclude=["test*"]),
-    package_data={"rollback_ipyleaflet": package_data},
+    package_data={"gis_heleprs": package_data},
     entry_points={},
     install_requires=requirements,
 )
