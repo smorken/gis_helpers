@@ -15,7 +15,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="gis_heleprs",
-    version="0.1.0",
+    version="0.1.2",
     description="Scripts to clean up CBM-CFS3 data",
     keywords=["cbm-cfs3"],
     long_description=long_description,
